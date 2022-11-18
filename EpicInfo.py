@@ -1,6 +1,6 @@
 import requests, math, json
 
-res = requests.post('https://graphql.epicgames.com/graphql', json={"query":"query catalogQuery($locale: String, $count: Int, $start: Int, $country: String!, $sortBy: String, $sortDir: String) {Catalog {searchStore(locale: $locale count: $count start: $start country: $country sortBy: $sortBy sortDir: $sortDir) {paging {count start total}}}}","variables":{"locale":"en","count":1,"start":0,"country":"US","sortBy":"lastModifiedDate","sortDir":"DESC"}}, verify=False, headers={'origin': 'https://epicgames.com'})
+res = requests.post('https://graphql.epicgames.com/graphql', json={"query":"query catalogQuery($locale: String, $count: Int, $start: Int, $country: String!, $sortBy: String, $sortDir: String) {Catalog {searchStore(locale: $locale count: $count start: $start country: $country sortBy: $sortBy sortDir: $sortDir) {paging {count start total}}}}","variables":{"locale":"en","count":1,"start":0,"country":"US","sortBy":"lastModifiedDate","sortDir":"DESC"}}, headers={'origin': 'https://epicgames.com'})
 res = res.json()
 total = res['data']['Catalog']['searchStore']['paging']['total']
 print('total: %d' % total)
@@ -10,7 +10,7 @@ offerid = {}
 namespace = {}
 for i in range(0, pages):
 	print('page: %d' % (i+1))
-	res = requests.post('https://graphql.epicgames.com/graphql', json={"query":"query catalogQuery($locale: String, $count: Int, $start: Int, $country: String!, $sortBy: String, $sortDir: String) {Catalog {searchStore(locale: $locale count: $count start: $start country: $country sortBy: $sortBy sortDir: $sortDir ) {elements {namespace urlSlug catalogNs {mappings {mappings {offerId} pageSlug}}} paging {count start total}}}}","variables":{"locale":"en","count":1000,"start":i*1000,"country":"US","sortBy":"lastModifiedDate","sortDir":"DESC"}}, verify=False, headers={'origin': 'https://epicgames.com'})
+	res = requests.post('https://graphql.epicgames.com/graphql', json={"query":"query catalogQuery($locale: String, $count: Int, $start: Int, $country: String!, $sortBy: String, $sortDir: String) {Catalog {searchStore(locale: $locale count: $count start: $start country: $country sortBy: $sortBy sortDir: $sortDir ) {elements {namespace urlSlug catalogNs {mappings {mappings {offerId} pageSlug}}} paging {count start total}}}}","variables":{"locale":"en","count":1000,"start":i*1000,"country":"US","sortBy":"lastModifiedDate","sortDir":"DESC"}}, headers={'origin': 'https://epicgames.com'})
 	res = res.json()
 	for item in res['data']['Catalog']['searchStore']['elements']:
 		if item['catalogNs']['mappings'] != None:
