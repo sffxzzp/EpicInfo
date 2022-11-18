@@ -1,0 +1,31 @@
+name: Update
+
+on:
+  schedule:
+    - cron:  '0 16 */8 * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+    - name: Processing data
+      run: |
+        python EpicInfo.py
+    - name: Get time
+      run: |
+        echo "CMsg=Updated: $(date +'%Y-%m-%d %H:%M:%S %z')" >> $GITHUB_ENV
+    - name: Push / Submit
+      uses: github-actions-x/commit@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: env.CMsg
