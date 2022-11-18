@@ -27,6 +27,6 @@ jobs:
     - name: Push / Submit
       uses: Smart-Transportation/push@master
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: main
         message: env.CMsg
