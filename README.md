@@ -6,4 +6,4 @@ EpicInfo
 
 脚本发布页面：[\[脚本\]Epic拥有游戏链接变色](https://keylol.com/t640860-1-1)
 
-自动构建状态：todo
+自动构建状态：[![Update](https://github.com/sffxzzp/EpicInfo/actions/workflows/update.yml/badge.svg)](https://github.com/sffxzzp/EpicInfo/actions/workflows/update.yml)
