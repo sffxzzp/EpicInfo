@@ -25,11 +25,8 @@ jobs:
       run: |
         echo "CMsg=Updated: $(date +'%Y-%m-%d %H:%M:%S %z')" >> $GITHUB_ENV
     - name: Push / Submit
-      uses: github-actions-x/commit@master
+      uses: Smart-Transportation/push@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        push-branch: main
-        commit-message: env.CMsg
-        force-add: true
-        rebase: true
-        files: offerid.json namespace.json
+        branch: main
+        message: env.CMsg
