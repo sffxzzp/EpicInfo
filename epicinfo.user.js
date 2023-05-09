@@ -13,7 +13,7 @@
 // @grant        GM_getValue
 // @grant        GM_deleteValue
 // @grant        GM_getResourceText
-// @version      1.00
+// @version      1.01
 // @connect      www.epicgames.com
 // @connect      store-content.ak.epicgames.com
 // @resource     offerid https://ghproxy.com/https://raw.githubusercontent.com/sffxzzp/EpicInfo/main/offerid.json
@@ -32,6 +32,7 @@
         for (let ns in namespace) {
             namespace[ns] = `p(roduct)?/${namespace[ns]}(/home)?$`;
         }
+        // manually patch some old bundles.
         namespace['b15fbb77440547c29567bfa76a878a32'] = ['bundles/bioshock-the-collection', 'p(roduct)?/bioshock-remastered(/home)?$', 'p(roduct)?/bioshock-2-remastered(/home)?$', 'p(roduct)?/bioshock-infinite-complete-edition(/home)?$'];
         namespace['85189f7cf7a64f86aa6aa91d81d36c08'] = ['bundles/borderlands-the-handsome-collection', 'p(roduct)?/borderlands-2(/home)?$', 'p(roduct)?/borderlands-the-pre-sequel(/home)?$'];
         namespace['bd8a7e894699493fb21503837f7b66c5'] = ['bundles/shadowrun-collection', 'p(roduct)?/shadowrun-returns(/home)?$', 'p(roduct)?/shadowrun-hong-kong(/home)?$', 'p(roduct)?/shadowrun-dragonfall(/home)?$'];
@@ -46,14 +47,14 @@
         }
         return offerid;
     }
-    function get(page, lastCreatedAt) {
-        document.getElementById('epic_page').innerHTML = `第 ${page+1} 页`;
-        var lastLink = '';
-        if (lastCreatedAt > 0) {lastLink = '&lastCreatedAt='+encodeURIComponent(new Date(lastCreatedAt).toISOString());}
+    function get(nextPageToken) {
+        var nextLink = '';
+        if (nextPageToken != "START" && nextPageToken != null) { nextLink = '&nextPageToken=' + nextPageToken; }
         return new Promise((resolve, reject) => {
             GM_xmlhttpRequest({
                 method: 'GET',
-                url: 'https://www.epicgames.com/account/v2/payment/ajaxGetOrderHistory?locale=zh-CN&page='+page+lastLink,
+                // sortDir=DESC&sortBy=DATE is currently useless
+                url: 'https://www.epicgames.com/account/v2/payment/ajaxGetOrderHistory?locale=zh-Hans'+nextLink,
                 timeout: 3e4,
                 onload: function (res) {
                     try {
@@ -61,7 +62,7 @@
                     }
                     catch (err) {
                         document.getElementById('epic_page').innerHTML = '错误';
-                        GM_openInTab('https://www.epicgames.com/account/v2/payment/ajaxGetOrderHistory?locale=zh-CN&page=0', false);
+                        GM_openInTab('https://www.epicgames.com/account/v2/payment/ajaxGetOrderHistory?locale=zh-Hans', false);
                     }
                 },
                 onerror: reject,
@@ -72,7 +73,7 @@
     function parsePage(orders, namespace, offerid) {
         var data = [];
         orders.forEach(function (order) {
-            if (order.orderStatus == 'COMPLETED') {
+            if (order.orderType == 'PURCHASE') {
                 order.items.forEach(function (game) {
                     if (offerid.hasOwnProperty(game.offerId)) {
                         if (data.indexOf(offerid[game.offerId]) < 0) {
@@ -86,25 +87,20 @@
                 });
             }
         });
-        console.log(data);
         return data;
     }
     async function loadEpic() {
         var page = 0;
         var exit = 0;
         var data = [];
-        var lastCreatedAt = 0;
+        var nextPageToken = "START";
         var namespace = getNamespace();
         var offerid = getOfferID();
-        while (exit == 0) {
-            var pageData = await get(page, lastCreatedAt);
-            if (pageData.orders.length < 1) {
-                exit = 1;
-            }
-            else {
-                lastCreatedAt = pageData.orders[pageData.orders.length-1].createdAtMillis;
-                data = data.concat(parsePage(pageData.orders, namespace, offerid));
-            }
+        while (nextPageToken != null) {
+            document.getElementById('epic_page').innerHTML = `第 ${page+1} 页`;
+            var pageData = await get(nextPageToken);
+            nextPageToken = pageData.nextPageToken;
+            data = data.concat(parsePage(pageData.orders, namespace, offerid));
             page += 1;
         }
         document.getElementById('epic_page').innerHTML = '完成';
