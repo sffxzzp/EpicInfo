@@ -13,7 +13,7 @@
 // @grant        GM_getValue
 // @grant        GM_deleteValue
 // @grant        GM_getResourceText
-// @version      1.00
+// @version      1.01
 // @connect      www.epicgames.com
 // @connect      store-content.ak.epicgames.com
 // @resource     offerid https://ghproxy.com/https://raw.githubusercontent.com/sffxzzp/EpicInfo/main/offerid.json
@@ -49,11 +49,11 @@
     function get(page, lastCreatedAt) {
         document.getElementById('epic_page').innerHTML = `第 ${page+1} 页`;
         var lastLink = '';
-        if (lastCreatedAt > 0) {lastLink = '&lastCreatedAt='+encodeURIComponent(new Date(lastCreatedAt).toISOString());}
+        if (lastCreatedAt > 0) {lastLink = '&nextPageToken='+encodeURIComponent(new Date(lastCreatedAt).toISOString());}
         return new Promise((resolve, reject) => {
             GM_xmlhttpRequest({
                 method: 'GET',
-                url: 'https://www.epicgames.com/account/v2/payment/ajaxGetOrderHistory?locale=zh-CN&page='+page+lastLink,
+                url: 'https://www.epicgames.com/account/v2/payment/ajaxGetOrderHistory?sortDir=DESC&sortBy=DATE&locale=zh-Hans&page='+page+lastLink,
                 timeout: 3e4,
                 onload: function (res) {
                     try {
@@ -72,7 +72,7 @@
     function parsePage(orders, namespace, offerid) {
         var data = [];
         orders.forEach(function (order) {
-            if (order.orderStatus == 'COMPLETED') {
+            if (order.orderType == 'PURCHASE') {
                 order.items.forEach(function (game) {
                     if (offerid.hasOwnProperty(game.offerId)) {
                         if (data.indexOf(offerid[game.offerId]) < 0) {
