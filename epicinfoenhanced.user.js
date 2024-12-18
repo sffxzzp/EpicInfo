@@ -6,6 +6,7 @@
 // @match        *://steamdb.keylol.com/sync
 // @match        *://steamdb.sinaapp.com/sync
 // @match        *://keylol.com/*
+// @match        *://www.steamgifts.com/discussion/*
 // @grant        GM_xmlhttpRequest
 // @grant        GM_openInTab
 // @grant        GM_setValue
@@ -15,7 +16,7 @@
 // @grant        GM_registerMenuCommand
 // @grant        GM_unregisterMenuCommand
 // @grant        unsafeWindow
-// @version      1.00
+// @version      1.01
 // @connect      account-public-service-prod03.ol.epicgames.com
 // @connect      library-service.live.use1a.on.epicgames.com
 // @connect      store.epicgames.com
