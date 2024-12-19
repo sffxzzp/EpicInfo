@@ -15,8 +15,8 @@
 // @grant        GM_getResourceText
 // @grant        GM_registerMenuCommand
 // @grant        GM_unregisterMenuCommand
-// @grant        unsafeWindow
-// @version      1.01
+// @grant        GM_addStyle
+// @version      1.02
 // @connect      account-public-service-prod03.ol.epicgames.com
 // @connect      library-service.live.use1a.on.epicgames.com
 // @connect      store.epicgames.com
@@ -83,6 +83,7 @@
         eie.prototype.clearData = function () {
             this.removeData('authCode');
             this.removeData('user');
+            this.removeData('library');
         };
         eie.prototype.clearMenu = function () {
             this.menu.forEach(function (menuid) {
@@ -260,9 +261,8 @@
         };
         eie.prototype.loadSyncUI = function () {
             let _this = this;
-            var newspan = document.createElement('div');
-            newspan.className = 'span6';
-            newspan.innerHTML = '<h3>正在读取你的 Epic 游戏库 <span id="epic_page">第 1 页</span></h3><div id="epic_before" class="progress progress-success progress-striped active"><div style="width: 100%;" class="bar"></div></div><div id="epic_after" style="display: none;" class="alert alert-success"><strong>成功读取并记录了 <span id="epic_num">0</span> 个条目，匹配成功 <span id="epic_num_success">0</span> 个条目</strong></div>';
+            GM_addStyle('.row-fluid {display: flex; flex-wrap: wrap; justify-content: space-between;} .row-fluid:before, .row-fluid:after {display: none !important;} .span6 {margin-left: 0px !important;}');
+            let newspan = util.createElement({node: 'div', content: {class: 'span6'}, html: '<h3>正在读取你的 Epic 游戏库 <span id="epic_page">第 1 页</span></h3><div id="epic_before" class="progress progress-success progress-striped active"><div style="width: 100%;" class="bar"></div></div><div id="epic_after" style="display: none;" class="alert alert-success"><strong>成功读取并记录了 <span id="epic_num">0</span> 个条目，匹配成功 <span id="epic_num_success">0</span> 个条目</strong></div>'});
             document.getElementById('withScript').appendChild(newspan);
             var trash = document.querySelector('.icon-trash').onclick;
             document.querySelector('#reset').onclick = function () {
