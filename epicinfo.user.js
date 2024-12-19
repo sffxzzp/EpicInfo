@@ -3,17 +3,19 @@
 // @author       sffxzzp
 // @namespace    https://github.com/sffxzzp
 // @description  快速匹配 Epic 游戏信息
-// @include      https://steamdb.keylol.com/sync
-// @include      http://steamdb.sinaapp.com/sync
-// @include      /^https?:\/\/www\.epicgames\.com/account\/v2\/payment\/ajaxGetOrderHistory.*/
-// @include      /https?:\/\/keylol\.com\/.*/
+// @match        *://steamdb.keylol.com/sync
+// @match        *://steamdb.sinaapp.com/sync
+// @match        *://keylol.com/*
+// @match        *://www.steamgifts.com/discussion/*
+// @match        *://www.epicgames.com/account/v2/payment/ajaxGetOrderHistory*
 // @grant        GM_xmlhttpRequest
 // @grant        GM_openInTab
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_deleteValue
 // @grant        GM_getResourceText
-// @version      1.02
+// @grant        GM_addStyle
+// @version      1.03
 // @connect      www.epicgames.com
 // @connect      store-content.ak.epicgames.com
 // @resource     offerid https://raw.githubusercontent.com/sffxzzp/EpicInfo/main/offerid.json
@@ -109,12 +111,16 @@
         document.getElementById('epic_before').style.display = 'none';
         document.getElementById('epic_after').style.display = '';
     }
-    function loadKeylol() {
+    function loadWebsite() {
         var data = GM_getValue('epic');
         if (data) {
             data = JSON.parse(data);
         }
-        document.querySelectorAll('[id^=pid] a').forEach(function (a) {
+        var selector = 'a';
+        if (location.href.indexOf('keylol.com') > 0) {
+            selector = '[id^=pid] a';
+        }
+        document.querySelectorAll(selector).forEach(function (a) {
             if (a.href.indexOf('epicgames.com')>-1) {
                 for (var game of data) {
                     if ((new RegExp(game)).test(a.href)) {
@@ -125,6 +131,7 @@
         });
     }
     if (document.URL == 'https://steamdb.keylol.com/sync' || document.URL == 'http://steamdb.sinaapp.com/sync') {
+        GM_addStyle('.row-fluid {display: flex; flex-wrap: wrap; justify-content: space-between;} .row-fluid:before, .row-fluid:after {display: none !important;} .span6 {margin-left: 0px !important;}');
         var newspan = document.createElement('div');
         newspan.className = 'span6';
         newspan.innerHTML = '<h3>正在读取你的 Epic 游戏库 <span id="epic_page">第 1 页</span></h3><div id="epic_before" class="progress progress-success progress-striped active"><div style="width: 100%;" class="bar"></div></div><div id="epic_after" style="display: none;" class="alert alert-success"><strong>成功读取并记录了 <span id="epic_num">0</span> 个条目</strong></div>';
@@ -140,6 +147,6 @@
         alert('该弹出页面用于解决同步错误。\n请在页面完整打开后，刷新同步页面。');
     }
     else {
-        loadKeylol();
+        loadWebsite();
     }
 })();
