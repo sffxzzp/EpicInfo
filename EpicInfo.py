@@ -32,7 +32,6 @@ with open('offerid.json', 'r', encoding='utf-8') as f:
 	offeridfinal = json.loads(f.read())
 	for key in offerid:
 		offeridfinal[key] = offerid[key]
-	print(offeridfinal)
 
 with open('offerid.json', 'w', encoding='utf-8') as f:
 	f.write(json.dumps(offeridfinal))
@@ -41,7 +40,6 @@ with open('namespace.json', 'r', encoding='utf-8') as f:
 	namespacefinal = json.loads(f.read())
 	for key in namespace:
 		namespacefinal[key] = namespace[key]
-	print(namespacefinal)
 
 with open('namespace.json', 'w', encoding='utf-8') as f:
 	f.write(json.dumps(namespacefinal))
