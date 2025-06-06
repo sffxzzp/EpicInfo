@@ -241,7 +241,7 @@
             document.getElementById('epic_after').style.display = '';
             document.getElementById('epic_page').innerHTML = '详细查询中';
             document.getElementById('epic_num').innerHTML = tData.size;
-            document.getElementById('epic_num_success').innerHTML = library.length;
+            document.getElementById('epic_num_success').innerHTML = tData.size - nstodo.length;
             for (let ns of nstodo) {
                 let pageSlug = await _this.getPageSlug(ns);
                 if (pageSlug != '') {
