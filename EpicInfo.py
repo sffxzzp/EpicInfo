@@ -1,6 +1,6 @@
-import requests, math, json, time
+import math, json, time, curl_cffi
 
-res = requests.post('https://graphql.epicgames.com/graphql', json={"query":"query catalogQuery($locale: String, $count: Int, $start: Int, $country: String!, $sortBy: String, $sortDir: String) {Catalog {searchStore(locale: $locale count: $count start: $start country: $country sortBy: $sortBy sortDir: $sortDir) {paging {count start total}}}}","variables":{"locale":"en","count":1,"start":0,"country":"US","sortBy":"lastModifiedDate","sortDir":"DESC"}}, headers={'origin': 'https://epicgames.com'})
+res = curl_cffi.post('https://store.epicgames.com/graphql', json={"query":"query catalogQuery($locale: String, $count: Int, $start: Int, $country: String!, $sortBy: String, $sortDir: String) {Catalog {searchStore(locale: $locale count: $count start: $start country: $country sortBy: $sortBy sortDir: $sortDir) {paging {count start total}}}}","variables":{"locale":"en","count":1,"start":0,"country":"US","sortBy":"lastModifiedDate","sortDir":"DESC"}}, headers={'origin': 'https://epicgames.com'}, impersonate="chrome", verify=False)
 res = res.json()
 total = res['data']['Catalog']['searchStore']['paging']['total']
 print('total: %d' % total)
@@ -11,7 +11,7 @@ offerid = {}
 namespace = {}
 for i in range(0, pages):
 	print('page: %d' % (i+1))
-	res = requests.post('https://graphql.epicgames.com/graphql', json={"query":"query catalogQuery($locale: String, $count: Int, $start: Int, $country: String!, $sortBy: String, $sortDir: String) {Catalog {searchStore(locale: $locale count: $count start: $start country: $country sortBy: $sortBy sortDir: $sortDir ) {elements {namespace urlSlug catalogNs {mappings {mappings {offerId} pageSlug}}} paging {count start total}}}}","variables":{"locale":"en","count":pageSize,"start":i*pageSize,"country":"US","sortBy":"lastModifiedDate","sortDir":"DESC"}}, headers={'origin': 'https://epicgames.com'})
+	res = curl_cffi.post('https://store.epicgames.com/graphql', json={"query":"query catalogQuery($locale: String, $count: Int, $start: Int, $country: String!, $sortBy: String, $sortDir: String) {Catalog {searchStore(locale: $locale count: $count start: $start country: $country sortBy: $sortBy sortDir: $sortDir ) {elements {namespace urlSlug catalogNs {mappings {mappings {offerId} pageSlug}}} paging {count start total}}}}","variables":{"locale":"en","count":pageSize,"start":i*pageSize,"country":"US","sortBy":"lastModifiedDate","sortDir":"DESC"}}, headers={'origin': 'https://epicgames.com'}, impersonate="chrome", verify=False)
 	res = res.json()
 	try:
 		for item in res['data']['Catalog']['searchStore']['elements']:
