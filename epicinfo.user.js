@@ -15,9 +15,10 @@
 // @grant        GM_deleteValue
 // @grant        GM_getResourceText
 // @grant        GM_addStyle
-// @version      1.04
+// @version      1.05
 // @connect      www.epicgames.com
 // @connect      store-content.ak.epicgames.com
+// @connect      accounts.epicgames.com
 // @resource     offerid https://raw.githubusercontent.com/sffxzzp/EpicInfo/main/offerid.json
 // @resource     namespace https://raw.githubusercontent.com/sffxzzp/EpicInfo/main/namespace.json
 // @resource     patch https://raw.githubusercontent.com/sffxzzp/EpicInfo/main/patch.json
@@ -56,7 +57,7 @@
             GM_xmlhttpRequest({
                 method: 'GET',
                 // sortDir=DESC&sortBy=DATE is currently useless
-                url: 'https://www.epicgames.com/account/v2/payment/ajaxGetOrderHistory?locale=zh-Hans'+nextLink,
+                url: 'https://accounts.epicgames.com/account/v2/payment/ajaxGetOrderHistory?locale=zh-Hans'+nextLink,
                 timeout: 3e4,
                 onload: function (res) {
                     try {
@@ -64,7 +65,7 @@
                     }
                     catch (err) {
                         document.getElementById('epic_page').innerHTML = '错误';
-                        GM_openInTab('https://www.epicgames.com/account/v2/payment/ajaxGetOrderHistory?locale=zh-Hans', false);
+                        GM_openInTab('https://accounts.epicgames.com/account/v2/payment/ajaxGetOrderHistory?locale=zh-Hans', false);
                     }
                 },
                 onerror: reject,
